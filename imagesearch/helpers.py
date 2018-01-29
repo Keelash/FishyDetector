@@ -1,5 +1,6 @@
 import imutils
 
+#Create a mip-map pyramid of the image
 def pyramid(image, scale = 1.5, minSize=(30, 30)):
 	yield image
 
@@ -12,6 +13,7 @@ def pyramid(image, scale = 1.5, minSize=(30, 30)):
 
 		yield image
 
+#Give a sliding window of the passed image
 def slidingWindow(image, stepSize, windowSize):
 	for y in xrange(0, image.shape[0], stepSize):
 		for x in xrange(0, image.shape[1], stepSize):
