@@ -19,3 +19,12 @@ class LocalBinaryPatterns:
 		hist /= (hist.sum() + eps)
  
 		return hist
+
+	def lbp_from_bBox(self, full_image, boundingBox)
+		x1 = boundingBox[0]
+		x2 = boundingBox[1]
+		y1 = boundingBox[2]
+		y2 = boundingBox[3]
+		image = full_image[y1:y2,x1:x2]
+		hist = describe(image)
+		return hist
