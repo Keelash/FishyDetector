@@ -7,6 +7,14 @@ import argparse
 import json
 import cv2
 
+import matplotlib.pyplot as plt
+
+
+# When you load an image using OpenCV it loads that image into BGR color space by default. To show the colored image using `matplotlib` we have to convert it to RGB space. Following is a helper function to do exactly that. 
+def convertToRGB(img):
+    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+
 ap = argparse.ArgumentParser()
 ap.add_argument("classifier", help="Path to the classifier to use")
 ap.add_argument("-v", "--verbose", action="store_true", help="Make the function verbose")
@@ -29,7 +37,7 @@ if args["subcommand"] == "train" :
 
 	for filePath in data :
 		window = list(map(int, data[filePath]["outer"]))
-		trainingData.append((filePath, window))
+		trainingData.append(("data/"+filePath, window))
 
 	if verbose :
 		print("Training an SVC based on the {} data : ".format(args["trainingFile"].split("/")[1]))
@@ -43,15 +51,15 @@ if args["subcommand"] == "train" :
 
 
 if args["subcommand"] == "detect" :
-	imageDetect = cv2.imread(args["detect"])
-	imageDetectGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+	imageDetect = cv2.imread(args["Image"])
+	imageDetectGray = cv2.cvtColor(imageDetect, cv2.COLOR_BGR2GRAY)
 
 	#TODO : Load the SVC
 
 	#TODO : We must save and load the mean ratio of the training window
 	(winW, winH) = (128, 128)
 
-	for resized in pyramid(image, scale=1.5):
+	for resized in pyramid(imageDetect, scale=1.5):
 		for (x, y, window) in slidingWindow(resized, stepSize=32, windowSize=(winW, winH)):
 
 			if window.shape[0] != winH or window.shape[1] != winW:
@@ -61,5 +69,10 @@ if args["subcommand"] == "detect" :
 
 			clone = resized.copy()
 			cv2.rectangle(clone, (x, y), (x + winW, y + winH), (0, 255, 0), 2)
-			cv2.imshow("Window", clone)
-			cv2.waitKey(1)
+			f, ax = plt.subplots(1, 1, figsize=(10, 5))
+			ax.set_title('Window')
+			ax.imshow(convertToRGB(clone))
+
+			plt.show()
+			#cv2.imshow("Window", clone)
+			#cv2.waitKey(1)

@@ -12,8 +12,9 @@ def trainSVC(trainingData) :
 	svcLabel = []
 	svcWeight = []
 
-	bar = PercentBar("Data Training");
-	bar.show()
+	bar = PercentBar("Data Training")
+	bar.setPercent(int(0))
+	#bar.show()
 	it = 0.0
 
 	desc = LocalBinaryPatterns(24, 8) #Must be user defined later
@@ -26,9 +27,9 @@ def trainSVC(trainingData) :
 		#be set as an option for the user.
 
 		imageTrain = cv2.cvtColor(cv2.imread(filePath), cv2.COLOR_BGR2GRAY)
-		imageTrain = imutils.resize(imageTrain, width=imageTrain.shape[0]/4)
+		imageTrain = imutils.resize(imageTrain, width=int(imageTrain.shape[0]/4))
 
-		(x, y, w, h) = [ value / 4 for value in posWindow]
+		(x, y, w, h) = [ int(value / 4) for value in posWindow]
 		hist = desc.describe(imageTrain[y:y+h, x:x+w])
 
 		for (winX, winY, window) in slidingWindow(imageTrain, stepSize=32, windowSize=(w, h)):
@@ -53,7 +54,7 @@ def trainSVC(trainingData) :
 
 		it += 1.0
 		bar.setPercent(int((it/len(trainingData))*100))
-		bar.show()
+		#bar.show()
 
 	model = LinearSVC(C=100.0, random_state=42)
 	model.fit(svcData, svcLabel, svcWeight)
