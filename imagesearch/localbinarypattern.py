@@ -20,7 +20,7 @@ class LocalBinaryPatterns:
  
 		return hist
 
-	def lbp_from_bBox(self, full_image, boundingBox)
+	def lbp_from_bBox(self, full_image, boundingBox) :
 		x1 = boundingBox[0]
 		x2 = boundingBox[1]
 		y1 = boundingBox[2]
