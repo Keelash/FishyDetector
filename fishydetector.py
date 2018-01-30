@@ -23,7 +23,7 @@ subap = ap.add_subparsers(dest='subcommand')
 apTraining = subap.add_parser('train')
 apTraining.add_argument( 'trainingFile', help='The path to the training data json file')
 apDetect = subap.add_parser('detect')
-apDetect.add_argument('Image', help='The path to an Image')
+apDetect.add_argument('image', help='The path to an Image')
 
 args = vars(ap.parse_args())
 
@@ -37,7 +37,7 @@ if args["subcommand"] == "train" :
 
 	for filePath in data :
 		window = list(map(int, data[filePath]["outer"]))
-		trainingData.append(("data/"+filePath, window))
+		trainingData.append((filePath, window))
 
 	if verbose :
 		print("Training an SVC based on the {} data : ".format(args["trainingFile"].split("/")[1]))
@@ -51,7 +51,7 @@ if args["subcommand"] == "train" :
 
 
 if args["subcommand"] == "detect" :
-	imageDetect = cv2.imread(args["Image"])
+	imageDetect = cv2.imread(args["image"])
 	imageDetectGray = cv2.cvtColor(imageDetect, cv2.COLOR_BGR2GRAY)
 
 	#TODO : Load the SVC

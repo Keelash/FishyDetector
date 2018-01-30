@@ -14,7 +14,7 @@ def trainSVC(trainingData) :
 
 	bar = PercentBar("Data Training")
 	bar.setPercent(int(0))
-	#bar.show()
+	bar.show()
 	it = 0.0
 
 	desc = LocalBinaryPatterns(24, 8) #Must be user defined later
@@ -54,7 +54,7 @@ def trainSVC(trainingData) :
 
 		it += 1.0
 		bar.setPercent(int((it/len(trainingData))*100))
-		#bar.show()
+		bar.show()
 
 	model = LinearSVC(C=100.0, random_state=42)
 	model.fit(svcData, svcLabel, svcWeight)
