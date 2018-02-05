@@ -10,5 +10,8 @@ class PercentBar:
 
 	def show(self) :
 		sys.stdout.write('\r')
-		sys.stdout.write(self.title + " : [%-20s] %d%%" % ('='*(self.currPercent/5), self.currPercent))
+		sys.stdout.write(self.title + " : [%-20s] %d%%" % ('='*int(self.currPercent/5), self.currPercent))
 		sys.stdout.flush()
+
+	def __exit__(self) :
+		print('\n')

@@ -1,4 +1,4 @@
-from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
 
 from imagesearch.helpers import slidingWindow
 from imagesearch.helpers import pyramid
@@ -18,18 +18,17 @@ def trainSVC(trainingData,
 	svcData = []
 	svcLabel = []
 
-	bar = PercentBar("Data Training")
+	bar = PercentBar("Data Extraction")
 	bar.setPercent(int(0))
 	bar.show()
 
 	desc = LocalBinaryPatterns(24, 8) #Must be user defined later
-	it = 0.0
+	model = SVC(kernel='rbf', C=0.1, random_state=42, verbose=True)
 
 	for (i, (filePath, posWindow)) in enumerate(trainingData) :
 
 		#We reduce the image because there are too big for quick test. But it can
 		#be set as an option for the user.
-
 		imageTrain = cv2.cvtColor(cv2.imread(filePath), cv2.COLOR_BGR2GRAY)
 		imageTrain = imutils.resize(imageTrain, width=int(imageTrain.shape[1]/4))
 		(y, x, w, h) = [ int(value/4) for value in posWindow]
@@ -47,7 +46,7 @@ def trainSVC(trainingData,
 				#the sliding window
 				x_overlap = max(0, min(x+w, winX+windowSize[0]) - max(x, winX));
 				y_overlap = max(0, min(y+h, winY+windowSize[1]) - max(y, winY));
-				overlapAreaPercent = float(x_overlap * y_overlap) / float(w*h);
+				overlapAreaPercent = float(x_overlap * y_overlap) / float(windowSize[0]*windowSize[1]);
 
 				if overlapAreaPercent > epsilon and overlapAreaPercent != 1.0 :
 					svcLabel.append("Fishy")
@@ -58,11 +57,12 @@ def trainSVC(trainingData,
 
 			(x, y, w, h) = [ int(value / scale) for value in (x, y, w, h)]
 
-		it += 1.0
-		bar.setPercent(int((it/len(trainingData))*100))
+		bar.setPercent(int((float(i)/len(trainingData))*100))
 		bar.show()
+	print("End of the data collection")
 
-	model = LinearSVC(C=100.0, random_state=42)
+	print("Beginning of the training")
 	model.fit(svcData, svcLabel)
+	print("End of the Training")
 
 	return model
